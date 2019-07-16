@@ -57,7 +57,7 @@ th {
 
 
 <body>
-<div id="box" style="overflow: scroll;height:300px;"></div>
+<div id="box" style="overflow: scroll;height:300px;"><h1>VDM1 Reviews: READY/IN PROGRESS</h1><br>There are no reviews at this time.</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
 
