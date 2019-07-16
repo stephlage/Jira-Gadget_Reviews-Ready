@@ -4,7 +4,7 @@
   description="This gadget pulls content from a three JIRA CSV pulls to display all reviews that are ready or in progress."
   author="Stephanie Frantz"
   author_email="stephanie.frantz@cengage.com"
-  height="400" 
+  height="300" 
   scrolling="yes"
   >
     <Optional feature="gadget-directory">
@@ -33,6 +33,7 @@
   <Content type="html" view="profile,canvas,home">
     <![CDATA[
 	
+	
 	<style>
 table {
   margin: 0 auto;
@@ -56,7 +57,7 @@ th {
 
 
 <body>
-<div id="box" style="overflow: scroll;height:400px;"></div>
+<div id="box" style="overflow: scroll;height:300px;"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
 
@@ -69,30 +70,38 @@ var array= new Array();
 
 //pull in previewxml
 var previewxml = $.ajax({
- //url: 'VDMFILTERPREVIEW1.csv',
+ //url: 'VDMREVIEWREADYPREVIEW.csv',
     url: 'https://jira.cengage.com/sr/jira.issueviews:searchrequest-csv-current-fields/109514/SearchRequest-109514.csv',
   dataType: 'text',
   async: false
 }).responseText;
-//console.log(previewxml);
-
+console.log(previewxml);
+if (previewxml === "\n") {
+    previewxml = "Issue key,Issue id,Custom field (Title),Custom field (Preview XML Received Date),Custom field (SLA for VDM1 Preview XML)\n"
+}
 //pull in corexml
 var corexml = $.ajax({
-  //url: 'VDMFILTERCORE.csv',
+  //url: 'VDMREVIEWREADYCORE.csv',
    url: 'https://jira.cengage.com/sr/jira.issueviews:searchrequest-csv-current-fields/109515/SearchRequest-109515.csv',
   dataType: 'text',
   async: false
 }).responseText;
-//console.log(corexml);
+console.log(corexml);
+if (corexml === "\n") {
+    corexml = "Issue key,Issue id,Custom field (Title),Custom field (Core XML Received Date),Custom field (SLA for VDM1 Core XML)\n"
+}
 
 //pull in finalxml
 var finalxml = $.ajax({
- // url: 'VDMFILTERFINAL.csv',
+ // url: 'VDMREVIEWREADYFINAL.csv',
    url: 'https://jira.cengage.com/sr/jira.issueviews:searchrequest-csv-current-fields/109516/SearchRequest-109516.csv',
   dataType: 'text',
   async: false
 }).responseText;
-//console.log(finalxml);
+console.log(finalxml);
+if (finalxml === "\n") {
+    finalxml = "Issue key,Issue id,Custom field (Title),Custom field (Final XML Received Date),Custom field (SLA for VDM1 Final XML)\n"
+}
 
 //this is just the function to put things into csv
 function csvToArray (csv) {
@@ -125,12 +134,12 @@ function csvToArray (csv) {
 	
 
 	
-//and if it's got in the header the type of review based on due date from the csv -- then we'll say which type of review.
-	 if (csv.includes("Preview XML Due Date")){
+//and if it's got in the header the type of review based on Received date from the csv -- then we'll say which type of review.
+	 if (csv.includes("Preview XML Received Date")){
 	row += ", Preview"}
-		 if (csv.includes("Core XML Due Date")){
+		 if (csv.includes("Core XML Received Date")){
 	row += ", Core"}
-		 if (csv.includes("Final XML Due Date")){
+		 if (csv.includes("Final XML Received Date")){
 	row += ", Final"}
     	return row.split(",");
     });
@@ -169,7 +178,7 @@ masterarray.shift();
 		}
 		
 //console.log(new Date(masterarray[3][3]));
-console.log(masterarray[3][3]);	
+console.log(masterarray[1][3]);	
 
 
 //and now sort according to the date
@@ -204,7 +213,7 @@ return  +new Date(a[3]) - +new Date(b[3]);
 
 }
 
-console.log(new Date(masterarray[3][3]));
+console.log(new Date(masterarray[1][3]));
 
 
 console.log(masterarray);
@@ -228,8 +237,8 @@ today = dd + '/' + mm + '/' + yyyy;
 console.log(today);
 
 
-    var html = "<table border='1|1'>";
-    html+="<tr><th>Issue Key</th><th>Title</th><th>Due Date</th><th>Review Type</th><th>SLA Timer</th></tr>";
+    var html = "<h1>VDM1 Reviews: READY/IN PROGRESS</h1><table border='1|1'>";
+    html+="<tr><th>Issue Key</th><th>Title</th><th>XML Received Date</th><th>Review Type</th><th>SLA Timer</th></tr>";
     for (var i = 0; i < masterarray.length; i++) {
         html+="<tr>";
         html+="<td><a href=https://jira.cengage.com/browse/"+masterarray[i][0]+">"+masterarray[i][0]+"</a></td>";
